@@ -1,0 +1,11 @@
+target/
+lib_managed/
+submission/
+bin/
+.worksheet
+.cache
+.classpath
+.project
+.settings
+.metadata
+
