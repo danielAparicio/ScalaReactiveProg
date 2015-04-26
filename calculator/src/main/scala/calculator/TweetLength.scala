@@ -1,0 +1,49 @@
+package calculator
+
+object TweetLength {
+  final val MaxTweetLength = 140
+  
+  /* TO RUN THE APP
+  In sbt, run:
+
+  > webUI/fastOptJS
+  
+  If your code compiles, this will produce the JavaScript necessary to run the HTML page in the browser.
+  You can now open the file web-ui/index.html in your favorite browser, 
+  and enter text in the first text area
+  
+  index.html is in calculator/web-ui
+  */
+
+  def tweetRemainingCharsCount(tweetText: Signal[String]): Signal[Int] = {
+    Signal(MaxTweetLength - tweetLength(tweetText()))
+  }
+
+  def colorForRemainingCharsCount(remainingCharsCount: Signal[Int]): Signal[String] = {    
+    //new signal that depends on another signal.
+    //IMP: if we return one signal per each case is wrong, the color will not change
+    Signal(remainingCharsCount() match {
+      case x if (x>=15) => "green"
+      case x if (x>=0) => "orange"
+      case _ => "red"
+    })
+  }
+
+  /** Computes the length of a tweet, given its text string.
+   *  This is not equivalent to text.length, as tweet lengths count the number
+   *  of Unicode *code points* in the string.
+   *  Note that this is still a simplified view of the reality. Full details
+   *  can be found at
+   *  https://dev.twitter.com/overview/api/counting-characters
+   */
+  private def tweetLength(text: String): Int = {
+    /* This should be simply text.codePointCount(0, text.length), but it
+     * is not implemented in Scala.js 0.6.2.
+     */
+    if (text.isEmpty) 0
+    else {
+      text.length - text.init.zip(text.tail).count(
+          (Character.isSurrogatePair _).tupled)
+    }
+  }
+}
