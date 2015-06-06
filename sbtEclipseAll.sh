@@ -29,5 +29,8 @@ sbt eclipse
 cd ..
 cd actors_samples_week_5 
 sbt eclipse
+cd ..
+cd kvstore
+sbt eclipse
 
 
